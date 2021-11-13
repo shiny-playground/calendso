@@ -1,4 +1,4 @@
-FROM node:14-buster as builder
+FROM node:14-buster
 
 RUN apt-get install -y libc6 git
 WORKDIR /shiny
