@@ -322,7 +322,8 @@ function UserDropdown({ small }: { small?: boolean }) {
             <>
               <span className="flex-grow text-sm">
                 <span className="block font-medium text-gray-900 truncate">{user.name}</span>
-                <span className="block font-normal truncate text-neutral-500">cal.com/{user.username}</span>
+                {/* <span className="block font-normal truncate text-neutral-500">cal.com/{user.username}</span> */}
+                <span className="block font-normal truncate text-neutral-500">{`${process.env.NEXT_PUBLIC_APP_URL}/${user.username}`}</span>
               </span>
               <SelectorIcon
                 className="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500"
