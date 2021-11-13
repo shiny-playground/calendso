@@ -3,7 +3,6 @@ import { signIn } from "next-auth/client";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 
-import { asStringOrNull } from "@lib/asStringOrNull";
 import { useLocale } from "@lib/hooks/useLocale";
 import prisma from "@lib/prisma";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
@@ -133,45 +132,42 @@ export default function Signup({ email }: Props) {
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const token = asStringOrNull(ctx.query.token);
-  if (!token) {
-    return {
-      notFound: true,
-    };
-  }
-  const verificationRequest = await prisma.verificationRequest.findUnique({
-    where: {
-      token,
-    },
-  });
+  if (ctx.query.token) {
+    const verificationRequest = await prisma.verificationRequest.findUnique({
+      where: {
+        token: ctx.query.token,
+      },
+    });
 
-  // for now, disable if no verificationRequestToken given or token expired
-  if (!verificationRequest || verificationRequest.expires < new Date()) {
-    return {
-      notFound: true,
-    };
-  }
+    if (!verificationRequest || verificationRequest.expires < new Date()) {
+      return {
+        notFound: true,
+      };
+    }
 
-  const existingUser = await prisma.user.findFirst({
-    where: {
-      AND: [
-        {
-          email: verificationRequest.identifier,
-        },
-        {
-          emailVerified: {
-            not: null,
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        AND: [
+          {
+            email: verificationRequest.identifier,
           },
-        },
-      ],
-    },
-  });
+          {
+            emailVerified: {
+              not: null,
+            },
+          },
+        ],
+      },
+    });
 
-  if (existingUser) {
-    return {
-      redirect: { permanent: false, destination: "/auth/login?callbackUrl=" + ctx.query.callbackUrl },
-    };
+    if (existingUser) {
+      return {
+        redirect: { permanent: false, destination: "/auth/login?callbackUrl=" + ctx.query.callbackUrl },
+      };
+    }
+
+    return { props: { email: verificationRequest.identifier } };
+  } else {
+    return { props: {} };
   }
-
-  return { props: { email: verificationRequest.identifier } };
 };
