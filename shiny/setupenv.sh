@@ -1,0 +1,7 @@
+LOCAL_ENV_FILE=".env.local"
+
+# Create and zero file
+> $LOCAL_ENV_FILE
+
+echo "NEXT_PUBLIC_LICENSE_CONSENT=agree" >> $LOCAL_ENV_FILE
+echo "NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}" >> $LOCAL_ENV_FILE
