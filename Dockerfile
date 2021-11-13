@@ -2,6 +2,10 @@ FROM node:14-buster
 
 RUN apt-get install -y libc6 git
 WORKDIR /shiny
+
+# Hack to nvalidate cache
+ADD https://www.google.com /time.now
+
 RUN git clone https://github.com/sneub/calendso .
 RUN git checkout shinycal
 
