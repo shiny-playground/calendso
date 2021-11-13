@@ -174,7 +174,7 @@ export default function Login({ csrfToken }) {
         </div>
         <div className="mt-4 text-neutral-600 text-center text-sm">
           {t("dont_have_an_account")} {/* replace this with your account creation flow */}
-          <a href="https://cal.com/signup" className="font-medium text-neutral-900">
+          <a href={`${process.env.NEXT_PUBLIC_APP_URL}/auth/signup`} className="font-medium text-neutral-900">
             {t("create_an_account")}
           </a>
         </div>
